@@ -7,7 +7,10 @@ requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "pymol-mcp contributors" }]
 dependencies = [
-    "mcp[cli]>=1.2.0",
+    # Built against the mcp.server.mcpserver.MCPServer API, which is 2.x-only
+    # (it replaced mcp.server.fastmcp.FastMCP from the 1.x line -- installing
+    # an mcp<2.0 here breaks every import in this package).
+    "mcp[cli]>=2.0.0",
     "pydantic>=2.0",
 ]
 
