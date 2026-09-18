@@ -90,7 +90,7 @@ For Claude Code / Claude Desktop, add to your MCP server config:
 
 | Category | Tools |
 |---|---|
-| Structures | `pymol_fetch`, `pymol_load`, `pymol_load_string`, `pymol_delete`, `pymol_reinitialize`, `pymol_list_objects`, `pymol_get_chains`, `pymol_get_sequence` |
+| Structures | `pymol_fetch`, `pymol_load`, `pymol_load_string`, `pymol_create_object`, `pymol_delete`, `pymol_reinitialize`, `pymol_list_objects`, `pymol_get_chains`, `pymol_get_sequence` |
 | Selections | `pymol_select`, `pymol_count_atoms`, `pymol_iterate_atoms` |
 | Styling | `pymol_show`, `pymol_hide`, `pymol_show_as`, `pymol_color`, `pymol_spectrum`, `pymol_bg_color`, `pymol_set` |
 | Camera | `pymol_orient`, `pymol_zoom`, `pymol_center`, `pymol_turn`, `pymol_get_view`, `pymol_set_view` |

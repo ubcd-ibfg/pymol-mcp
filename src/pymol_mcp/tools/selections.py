@@ -44,7 +44,11 @@ def register(mcp: MCPServer) -> None:
         ],
     ) -> SelectionResult:
         """Create a named selection from a PyMOL selection expression. The
-        name can then be used anywhere a selection argument is expected."""
+        name can then be used anywhere a selection argument is expected.
+        Note: a selection is just a tag on atoms within their existing
+        object(s), not an independent object -- it cannot be used as one
+        side of pymol_align/pymol_cealign/pymol_super. Use
+        pymol_create_object instead when you need a standalone copy."""
         session = get_session(ctx)
         async with pymol_errors(context=f"selecting '{selection}'"):
             n_atoms = await session.call("select", name, selection)

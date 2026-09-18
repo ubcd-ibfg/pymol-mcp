@@ -108,6 +108,33 @@ def register(mcp: MCPServer) -> None:
 
     @mcp.tool(
         annotations=ToolAnnotations(
+            title="Create a new object from a selection",
+            read_only_hint=False,
+            destructive_hint=False,
+            idempotent_hint=True,
+            open_world_hint=False,
+        )
+    )
+    async def pymol_create_object(
+        ctx: Context,
+        name: Annotated[str, Field(description="Name for the new object.")],
+        selection: Annotated[
+            str, Field(description="Selection to copy into the new object, e.g. 'myprotein and chain A'.")
+        ],
+    ) -> ObjectInfo:
+        """Create an independent new object by copying a selection out of
+        an existing one, with its own coordinates. Use this (not
+        pymol_select) whenever you need to treat part of a structure as its
+        own object -- e.g. isolating one chain before pymol_align or
+        pymol_cealign, which need two distinct objects to compare, not two
+        selections within the same object."""
+        session = get_session(ctx)
+        async with pymol_errors(context=f"creating '{name}' from '{selection}'"):
+            await session.call("create", name, selection)
+        return await _object_info(session, name)
+
+    @mcp.tool(
+        annotations=ToolAnnotations(
             title="Delete object(s)",
             read_only_hint=False,
             destructive_hint=True,

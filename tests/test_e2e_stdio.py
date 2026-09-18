@@ -109,6 +109,28 @@ async def test_run_python_captures_stdout_and_value():
         assert r.structured_content["stdout"].strip() == "hi"
 
 
+async def test_create_object_then_align_two_chains():
+    # A named selection (pymol_select) is just a tag on an existing object's
+    # atoms, not an independent object -- cmd.align needs two real objects.
+    # This is what pymol_create_object is for; regression-test the pairing.
+    async with _connected_session() as session:
+        r = await session.call_tool("pymol_fetch", {"pdb_id": "4hhb", "type": "pdb", "object_name": "hhb"})
+        assert not r.is_error
+
+        r = await session.call_tool("pymol_create_object", {"name": "a", "selection": "hhb and chain A and polymer"})
+        assert not r.is_error
+        assert r.structured_content["n_atoms"] == 1069
+
+        r = await session.call_tool("pymol_create_object", {"name": "c", "selection": "hhb and chain C and polymer"})
+        assert not r.is_error
+        assert r.structured_content["n_atoms"] == 1069
+
+        r = await session.call_tool("pymol_align", {"mobile": "a", "target": "c", "cycles": 0})
+        assert not r.is_error, r.content
+        assert round(r.structured_content["rmsd_refined"], 2) == 0.62
+        assert r.structured_content["n_atoms_refined"] == 1069
+
+
 async def test_sasa_and_center_of_mass():
     async with _connected_session() as session:
         await session.call_tool("pymol_fetch", {"pdb_id": "1ubq", "type": "pdb"})
