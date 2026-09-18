@@ -124,7 +124,11 @@ pytest tests/
 npx @modelcontextprotocol/inspector pymol-mcp   # interactive tool inspection
 ```
 
-See `evaluation/pymol_mcp_eval.xml` for end-to-end evaluation questions.
+See `evaluation/pymol_mcp_eval.xml` for end-to-end evaluation questions and
+`ARCHITECTURE.md` for how the code is put together (module map, request
+flow, and the non-obvious decisions -- thread serialization, the
+`eval_json` marshalling bridge, why tool errors have to subclass the SDK's
+`ToolError`).
 
 ## License
 
