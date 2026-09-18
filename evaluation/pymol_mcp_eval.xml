@@ -1,0 +1,42 @@
+<evaluation>
+  <qa_pair>
+    <question>Fetch the PDB structure 1UBQ. How many atoms does the resulting object contain in total?</question>
+    <answer>660</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 1UBQ and get its sequence. How many residues long is the protein chain (i.e. how many amino acid letters are in the FASTA sequence)?</question>
+    <answer>76</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 1UBQ. How many alpha-carbon (CA) atoms does it contain? (This should equal the residue count, since there is exactly one CA per residue.)</question>
+    <answer>76</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 4HHB (hemoglobin). List the chain IDs present, in alphabetical order, separated by commas with no spaces (e.g. "A,B,C").</question>
+    <answer>A,B,C,D</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 4HHB. How many atoms are in the full structure (all chains, all heteroatoms, all waters included)?</question>
+    <answer>4779</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 4HHB. How many water molecules (residue name HOH) does it contain?</question>
+    <answer>221</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 4HHB. Besides water (HOH), what non-polymer heteroatom residue names (ligands/cofactors) are present? List them alphabetically, comma-separated, no spaces.</question>
+    <answer>HEM,PO4</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 4HHB. Create two new objects containing only the polymer atoms of chain A and chain C respectively (both are alpha-globin chains). How many atoms are in each of these two new objects? Give the two numbers separated by a comma (chain A count, then chain C count).</question>
+    <answer>1069,1069</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 4HHB. Create objects for the polymer atoms of chain A and chain C, then align the chain A object onto the chain C object using cycles=0 (which disables outlier rejection, giving an all-atom RMSD over the whole paired region). Rounding to two decimal places, what RMSD value is reported, and how many atom pairs were used in the alignment? Give your answer as "RMSD,n_atoms" (e.g. "0.50,1000").</question>
+    <answer>0.62,1069</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Fetch the PDB structure 1UBQ and compute its axis-aligned bounding box. Rounding to the nearest whole Angstrom, what is its extent (max minus min) along the X axis?</question>
+    <answer>31</answer>
+  </qa_pair>
+</evaluation>

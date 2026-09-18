@@ -1,0 +1,16 @@
+# conda-forge environment providing PyMOL open-source for the headless backend.
+#
+#   conda env create -f environment.yml
+#   conda activate pymol-mcp
+#   pip install -e .
+#
+name: pymol-mcp
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pymol-open-source
+  - pip
+  - pip:
+      - mcp[cli]>=1.2.0
+      - pydantic>=2.0
