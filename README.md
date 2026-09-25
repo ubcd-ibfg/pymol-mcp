@@ -6,21 +6,36 @@ for molecular visualization and structural analysis. It lets an MCP client
 structures, style and render them, and run structural analysis -- and
 actually *see* the resulting scene as a rendered PNG.
 
-## Why this works
-
-PyMOL open-source is a Python application, not just a GUI with a scripting
-bolt-on. `pymol.cmd` is the same ~500-function API surface the GUI itself
-calls, `pymol2.PyMOL()` gives you fully embeddable sessions, and the ray
-tracer is pure CPU -- so headless rendering needs no display, X server, or
-GPU. This server runs PyMOL in-process by default, with no setup beyond
-installing PyMOL itself.
-
 ## Install
 
 ### Headless mode (default, recommended)
 
 Requires PyMOL's Python bindings (`pymol2`) in the same environment as this
-server.
+server. Using [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv sync --extra headless
+```
+
+This installs `pymol-mcp` plus `pymol-open-source-whl` (prebuilt PyPI wheels
+for headless PyMOL) into a managed virtualenv. Run the server with
+`uv run pymol-mcp`.
+
+If you already have PyMOL installed some other way (see *Installing PyMOL
+open-source* below, e.g. a conda environment), just sync without the extra:
+
+```bash
+uv sync
+```
+
+<details>
+<summary>Without uv (pip / conda)</summary>
+
+```bash
+pip install -e ".[headless]"
+```
+
+Or, with PyMOL provided by a conda environment:
 
 ```bash
 conda env create -f environment.yml
@@ -28,12 +43,7 @@ conda activate pymol-mcp
 pip install -e .
 ```
 
-Or, if you already have `pymol-open-source` installed some other way (e.g.
-PyPI wheels via `pip install pymol-open-source-whl`), just:
-
-```bash
-pip install -e .
-```
+</details>
 
 ### Attach mode (drive a live PyMOL GUI instead)
 
@@ -57,19 +67,33 @@ through local temp files, not the network.
 > which has no display. If `pymol -R` doesn't behave as documented on your
 > PyMOL build, please file an issue.
 
+## Installing PyMOL open-source
+
+Only needed if you want PyMOL itself outside of the `uv sync --extra headless`
+path above -- e.g. to run `pymol -R` for attach mode, or to provide the
+`pymol2` bindings via conda instead of PyPI wheels.
+
+- **PyPI wheels** (headless, no GUI toolkit required): `uv pip install pymol-open-source-whl`
+- **conda-forge** (headless or full GUI): `conda install -c conda-forge pymol-open-source`
+- **Linux system package** (full GUI, e.g. Debian/Ubuntu): `sudo apt install pymol`
+- **From source**: see the [pymol-open-source](https://github.com/schrodinger/pymol-open-source) repo
+
 ## Run
 
 ```bash
 # Headless (default): owns an in-process PyMOL session
-pymol-mcp
+uv run pymol-mcp
 
 # Attach to a GUI you started with `pymol -R`
-pymol-mcp --attach
+uv run pymol-mcp --attach
 
 # Enable arbitrary Python execution inside the session (off by default --
 # see Security below)
-pymol-mcp --allow-python-exec
+uv run pymol-mcp --allow-python-exec
 ```
+
+(Drop `uv run` and call `pymol-mcp` directly if you installed with plain pip
+or conda instead.)
 
 ### MCP client configuration
 
@@ -79,12 +103,15 @@ For Claude Code / Claude Desktop, add to your MCP server config:
 {
   "mcpServers": {
     "pymol": {
-      "command": "pymol-mcp",
-      "args": []
+      "command": "uv",
+      "args": ["run", "--directory", "/path/to/pymol_mcp", "pymol-mcp"]
     }
   }
 }
 ```
+
+(Or `"command": "pymol-mcp", "args": []` if it's installed with plain pip or
+conda into an already-active environment.)
 
 ## Tools
 
@@ -119,9 +146,9 @@ A typical session: `pymol_fetch("1ubq")` -> `pymol_show_as("cartoon")` ->
 ## Development
 
 ```bash
-pip install -e ".[dev]"
-pytest tests/
-npx @modelcontextprotocol/inspector pymol-mcp   # interactive tool inspection
+uv sync --extra dev --extra headless
+uv run pytest tests/
+npx @modelcontextprotocol/inspector uv run pymol-mcp   # interactive tool inspection
 ```
 
 See `evaluation/pymol_mcp_eval.xml` for end-to-end evaluation questions and
