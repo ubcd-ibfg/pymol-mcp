@@ -97,6 +97,24 @@ or conda instead.)
 
 ### MCP client configuration
 
+`scripts/install_mcp.py` registers the server with whichever of Claude Code,
+Codex, and OpenCode it finds on `PATH` (all three by default):
+
+```bash
+./scripts/install_mcp.py                  # headless mode, every client found
+./scripts/install_mcp.py --clients claude # just Claude Code
+./scripts/install_mcp.py --attach         # register attach mode instead
+./scripts/install_mcp.py --dry-run        # preview without changing anything
+```
+
+It always points each client at `uv run --directory <this repo> pymol-mcp`,
+so it works regardless of which install method you used above. Run it again
+with `--force` to replace an existing registration. See `--help` for the
+full list of options (custom server name, scope, `--allow-python-exec`).
+
+<details>
+<summary>Manual configuration</summary>
+
 For Claude Code / Claude Desktop, add to your MCP server config:
 
 ```json
@@ -112,6 +130,30 @@ For Claude Code / Claude Desktop, add to your MCP server config:
 
 (Or `"command": "pymol-mcp", "args": []` if it's installed with plain pip or
 conda into an already-active environment.)
+
+For Codex, add to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.pymol]
+command = "uv"
+args = ["run", "--directory", "/path/to/pymol_mcp", "pymol-mcp"]
+```
+
+For OpenCode, add to `~/.config/opencode/opencode.json`:
+
+```json
+{
+  "mcp": {
+    "pymol": {
+      "type": "local",
+      "command": ["uv", "run", "--directory", "/path/to/pymol_mcp", "pymol-mcp"],
+      "enabled": true
+    }
+  }
+}
+```
+
+</details>
 
 ## Tools
 
