@@ -20,7 +20,14 @@ dependencies = [
 # plain pip even when PyMOL itself comes from a conda environment.
 
 [project.optional-dependencies]
-headless = ["pymol-open-source-whl"]
+# pymol-open-source-whl only ships wheels for manylinux_2_28 x86_64, macOS
+# (arm64/x86_64), and Windows amd64 -- there is no wheel for Linux aarch64
+# (Jetson, Graviton, Ampere/Grace ARM servers, etc). The marker below keeps
+# `uv sync --extra headless` from hard-failing the resolver there; on that
+# platform, install PyMOL via conda-forge instead (see README).
+headless = [
+    "pymol-open-source-whl; sys_platform != 'linux' or platform_machine != 'aarch64'",
+]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
 
 [project.scripts]

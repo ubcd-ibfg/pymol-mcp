@@ -851,14 +851,14 @@ dev = [
     { name = "pytest-asyncio" },
 ]
 headless = [
-    { name = "pymol-open-source-whl" },
+    { name = "pymol-open-source-whl", marker = "platform_machine != 'aarch64' or sys_platform != 'linux'" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "mcp", extras = ["cli"], specifier = ">=2.0.0" },
     { name = "pydantic", specifier = ">=2.0" },
-    { name = "pymol-open-source-whl", marker = "extra == 'headless'" },
+    { name = "pymol-open-source-whl", marker = "(platform_machine != 'aarch64' and extra == 'headless') or (sys_platform != 'linux' and extra == 'headless')" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23" },
 ]

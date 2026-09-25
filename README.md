@@ -21,6 +21,33 @@ This installs `pymol-mcp` plus `pymol-open-source-whl` (prebuilt PyPI wheels
 for headless PyMOL) into a managed virtualenv. Run the server with
 `uv run pymol-mcp`.
 
+> **Linux aarch64 (Jetson, Graviton, Ampere/Grace ARM servers, etc.):**
+> `pymol-open-source-whl` only publishes wheels for manylinux x86_64, macOS,
+> and Windows -- there is no wheel for Linux aarch64. `uv sync --extra
+> headless` will still succeed on that platform (the dependency is skipped
+> via an environment marker), but it won't actually install PyMOL. Two
+> options:
+>
+> - **Build from source straight into `.venv`** (stays in the `uv`-managed
+>   environment `uv run` uses -- no separate conda env to keep in sync):
+>   ```bash
+>   sudo apt install libglew-dev libgl1-mesa-dev libxml2-dev \
+>       libmsgpack-dev libnetcdf-dev libglm-dev libfreetype-dev libpng-dev
+>   ./scripts/build_pymol_from_source.sh
+>   ```
+>   This compiles PyMOL's C++ core (a few minutes) and installs the `pymol`
+>   / `pymol2` packages directly into `.venv`. See the script for what it
+>   does and why (notably: `mmtf-cpp` headers aren't packaged by apt and
+>   have to be fetched separately, or the build fails on a missing
+>   `mmtf.hpp`).
+> - **conda-forge**, which does publish `linux-aarch64` builds, if you'd
+>   rather not install a C++ toolchain and wait for a compile:
+>   ```bash
+>   conda env create -f environment.yml
+>   conda activate pymol-mcp
+>   pip install -e .
+>   ```
+
 If you already have PyMOL installed some other way (see *Installing PyMOL
 open-source* below, e.g. a conda environment), just sync without the extra:
 
@@ -73,10 +100,13 @@ Only needed if you want PyMOL itself outside of the `uv sync --extra headless`
 path above -- e.g. to run `pymol -R` for attach mode, or to provide the
 `pymol2` bindings via conda instead of PyPI wheels.
 
-- **PyPI wheels** (headless, no GUI toolkit required): `uv pip install pymol-open-source-whl`
-- **conda-forge** (headless or full GUI): `conda install -c conda-forge pymol-open-source`
+- **PyPI wheels** (headless, no GUI toolkit required): `uv pip install pymol-open-source-whl`.
+  No wheels for Linux aarch64 -- see the aarch64 note above instead.
+- **conda-forge** (headless or full GUI, including Linux aarch64): `conda install -c conda-forge pymol-open-source`
 - **Linux system package** (full GUI, e.g. Debian/Ubuntu): `sudo apt install pymol`
-- **From source**: see the [pymol-open-source](https://github.com/schrodinger/pymol-open-source) repo
+- **From source**: `./scripts/build_pymol_from_source.sh` builds it straight
+  into `.venv` (see the aarch64 note above); for other platforms or a
+  from-scratch build, see the [pymol-open-source](https://github.com/schrodinger/pymol-open-source) repo directly
 
 ## Run
 
